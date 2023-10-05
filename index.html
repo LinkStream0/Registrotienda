@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registrarse</title>
+    <link rel="stylesheet" href="styles.css"> <!-- Archivo de estilos CSS -->
+<script src="https://www.gstatic.com/firebasejs/8.9.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.9.1/firebase-database.js"></script>
+    <script src="registro.js"></script> <!-- Archivo de JavaScript con el código para Firebase -->
+</head>
+<style>body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+}
+
+.contenedor {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    max-width: 400px; /* Limita el ancho del contenedor para una mejor lectura */
+    margin: auto; /* Centra el contenedor en la pantalla */
+}
+
+h2 {
+    margin-bottom: 20px;
+    color: #333;
+}
+
+.campo {
+    margin-bottom: 10px;
+    text-align: left;
+}
+
+label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+    color: #555;
+}
+
+input {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+button {
+    padding: 10px 20px;
+    background-color: #3498db;
+    border: none;
+    border-radius: 5px;
+    color: #fff;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+button:hover {
+    background-color: #2980b9;
+}
+
+a {
+    text-decoration: none;
+    color: #3498db;
+    font-weight: bold;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+</style>
+<body>
+    <div class="contenedor">
+        <h2>Registrarse</h2>
+        <form onsubmit="return false;">
+            <div class="campo">
+                <label for="nombre">Nombre</label>
+                <input type="text" id="nombre" required>
+            </div>
+            <div class="campo">
+                <label for="email">Correo Electrónico</label>
+                <input type="email" id="email" required>
+            </div>
+            <div class="campo">
+                <label for="contrasena">Contraseña</label>
+                <input type="password" id="contrasena" required>
+            </div>
+            <button onclick="registrarUsuario()">Registrarse</button>
+        </form>
+        <p>¿Ya tienes una cuenta? <a href="login.html">Inicia Sesión aquí</a>.</p>
+    </div>
+    <script>
+    // Configura tu proyecto de Firebase
+const firebaseConfig = {
+       apiKey: "AIzaSyCB0fQGAd7NSwgP-GWive4YRAU9v_uV1F8",
+       authDomain: "cooperativ-cb0d4.firebaseapp.com",
+       databaseURL: "https://cooperativ-cb0d4-default-rtdb.firebaseio.com",
+       projectId: "cooperativ-cb0d4",
+       storageBucket: "cooperativ-cb0d4.appspot.com",
+       messagingSenderId: "1009427324331",
+       appId: "1:1009427324331:web:5a125c9e46dfbbe87c86ee",
+       measurementId: "G-VB36CLTBCN"
+    };
+
+
+// Inicializa Firebase
+firebase.initializeApp(firebaseConfig);
+
+// Referencia a la base de datos
+const database = firebase.database();
+
+// Función para registrar y almacenar información en Firebase
+
+function registrarUsuario2() {
+    const nombre = document.getElementById('nombre').value;
+    const email = document.getElementById('email').value;
+    const contrasena = document.getElementById('contrasena').value;
+
+    const emailValido = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+
+    if (nombre && email && emailValido && contrasena) {
+        const codigoGenerado = generarCodigoUnico();
+        const usuario = {
+            nombre: nombre,
+            email: email,
+            contrasena: contrasena,
+            idConmprador:codigoGenerado ,
+        };
+
+        database.ref('usuarios/' + codigoGenerado).set(usuario);
+        alert('¡Registro exitoso!');
+
+        // Vaciar los campos después de un registro exitoso
+        document.getElementById('nombre').value = '';
+        document.getElementById('email').value = '';
+        document.getElementById('contrasena').value = '';
+    } else {
+        alert('Por favor, completa todos los campos correctamente.');
+    }
+}
+function registrarUsuario() {
+    const nombre = document.getElementById('nombre').value;
+    const email = document.getElementById('email').value;
+    const contrasena = document.getElementById('contrasena').value;
+
+    const emailValido = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+
+    if (nombre && email && emailValido && contrasena) {
+        const codigoGenerado = generarCodigoUnico();
+        const usuario = {
+            nombre: nombre,
+            email: email,
+            contrasena: contrasena,
+            idConmprador:codigoGenerado 
+        };
+
+        // Guardar en Firebase
+        database.ref('usuarios/' + codigoGenerado).set(usuario);
+        alert(`¡Registro exitoso! tu codigo de vendedor es ${codigoGenerado}`);
+
+        // Guardar en localStorage
+        localStorage.setItem('usuario', JSON.stringify(usuario));
+localStorage.setItem('idUsuario',codigoGenerado );
+        // Vaciar los campos después de un registro exitoso
+        document.getElementById('nombre').value = '';
+        document.getElementById('email').value = '';
+        document.getElementById('contrasena').value = '';
+    } else {
+        alert('Por favor, completa todos los campos correctamente.');
+    }
+}
+
+
+
+// Función para generar un código único (puedes personalizarla según tus necesidades)
+function generarCodigoUnico() {
+  return Date.now().toString(36) + Math.random().toString(36).substr(2);
+}
+
+    </script>
+</body>
+</html>
